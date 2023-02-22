@@ -1,0 +1,49 @@
+2023-02-22 10:27:11.730403: I tensorflow/core/platform/cpu_feature_guard.cc:151] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-02-22 10:27:12.712775: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1525] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 13657 MB memory:  -> device: 0, name: Tesla T4, pci bus id: 0000:5e:00.0, compute capability: 7.5
+Model: "model"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ input_T5_1 (InputLayer)     [(None, 9, 1024)]         0         
+                                                                 
+ bidirectional_T5 (Bidirecti  (None, 9, 128)           557568    
+ onal)                                                           
+                                                                 
+ dropout (Dropout)           (None, 9, 128)            0         
+                                                                 
+ flatten (Flatten)           (None, 1152)              0         
+                                                                 
+ dense_LSTM_T5_1 (Dense)     (None, 64)                73792     
+                                                                 
+ dropout_1 (Dropout)         (None, 64)                0         
+                                                                 
+ dense_LSTM_T5_2 (Dense)     (None, 1)                 65        
+                                                                 
+=================================================================
+Total params: 631,425
+Trainable params: 631,425
+Non-trainable params: 0
+_________________________________________________________________
+Epoch 1/100
+2023-02-22 10:27:22.729040: I tensorflow/stream_executor/cuda/cuda_dnn.cc:368] Loaded cuDNN version 8200
+
+Epoch 1: val_loss improved from inf to 0.40194, saving model to models/LSTM_t5U50_L9.h5
+2703/2703 - 731s - loss: 0.4040 - acc: 0.8289 - auc: 0.4821 - val_loss: 0.4019 - val_acc: 0.8266 - val_auc: 0.5157 - 731s/epoch - 271ms/step
+Epoch 2/100
+
+Epoch 2: val_loss improved from 0.40194 to 0.39024, saving model to models/LSTM_t5U50_L9.h5
+2703/2703 - 716s - loss: 0.3797 - acc: 0.8388 - auc: 0.5429 - val_loss: 0.3902 - val_acc: 0.8313 - val_auc: 0.5425 - 716s/epoch - 265ms/step
+Epoch 3/100
+
+Epoch 3: val_loss did not improve from 0.39024
+2703/2703 - 665s - loss: 0.3651 - acc: 0.8451 - auc: 0.5766 - val_loss: 0.3912 - val_acc: 0.8352 - val_auc: 0.5507 - 665s/epoch - 246ms/step
+Epoch 4/100
+
+Epoch 4: val_loss did not improve from 0.39024
+2703/2703 - 661s - loss: 0.3509 - acc: 0.8513 - auc: 0.6081 - val_loss: 0.3911 - val_acc: 0.8352 - val_auc: 0.5508 - 661s/epoch - 244ms/step
+Epoch 5/100
+
+Epoch 5: val_loss did not improve from 0.39024
+2703/2703 - 672s - loss: 0.3372 - acc: 0.8567 - auc: 0.6366 - val_loss: 0.3943 - val_acc: 0.8380 - val_auc: 0.5605 - 672s/epoch - 249ms/step
+Epoch 6/100

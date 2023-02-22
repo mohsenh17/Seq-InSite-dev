@@ -1,0 +1,53 @@
+2023-02-22 10:27:07.517562: I tensorflow/core/platform/cpu_feature_guard.cc:151] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-02-22 10:27:08.585816: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1525] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 13657 MB memory:  -> device: 0, name: Tesla T4, pci bus id: 0000:5f:00.0, compute capability: 7.5
+Model: "model"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ input_T5_1 (InputLayer)     [(None, 9, 1024)]         0         
+                                                                 
+ flatten (Flatten)           (None, 9216)              0         
+                                                                 
+ dropout (Dropout)           (None, 9216)              0         
+                                                                 
+ dense_T5_1 (Dense)          (None, 256)               2359552   
+                                                                 
+ dropout_1 (Dropout)         (None, 256)               0         
+                                                                 
+ dense_T5_2 (Dense)          (None, 128)               32896     
+                                                                 
+ dropout_2 (Dropout)         (None, 128)               0         
+                                                                 
+ dense_T5_3 (Dense)          (None, 16)                2064      
+                                                                 
+ dropout_3 (Dropout)         (None, 16)                0         
+                                                                 
+ dense_T5_4 (Dense)          (None, 1)                 17        
+                                                                 
+=================================================================
+Total params: 2,394,529
+Trainable params: 2,394,529
+Non-trainable params: 0
+_________________________________________________________________
+Epoch 1/100
+
+Epoch 1: val_loss improved from inf to 0.41818, saving model to models/MLP_t5U50_L9.h5
+2703/2703 - 746s - loss: 0.4380 - acc: 0.8180 - auc: 0.4000 - val_loss: 0.4182 - val_acc: 0.8183 - val_auc: 0.5063 - 746s/epoch - 276ms/step
+Epoch 2/100
+
+Epoch 2: val_loss improved from 0.41818 to 0.40622, saving model to models/MLP_t5U50_L9.h5
+2703/2703 - 735s - loss: 0.4147 - acc: 0.8231 - auc: 0.4554 - val_loss: 0.4062 - val_acc: 0.8168 - val_auc: 0.5225 - 735s/epoch - 272ms/step
+Epoch 3/100
+
+Epoch 3: val_loss did not improve from 0.40622
+2703/2703 - 741s - loss: 0.4080 - acc: 0.8249 - auc: 0.4711 - val_loss: 0.4073 - val_acc: 0.8207 - val_auc: 0.5241 - 741s/epoch - 274ms/step
+Epoch 4/100
+
+Epoch 4: val_loss improved from 0.40622 to 0.40473, saving model to models/MLP_t5U50_L9.h5
+2703/2703 - 737s - loss: 0.4035 - acc: 0.8266 - auc: 0.4823 - val_loss: 0.4047 - val_acc: 0.8188 - val_auc: 0.5345 - 737s/epoch - 273ms/step
+Epoch 5/100
+
+Epoch 5: val_loss improved from 0.40473 to 0.39738, saving model to models/MLP_t5U50_L9.h5
+2703/2703 - 740s - loss: 0.3994 - acc: 0.8283 - auc: 0.4930 - val_loss: 0.3974 - val_acc: 0.8220 - val_auc: 0.5463 - 740s/epoch - 274ms/step
+Epoch 6/100
