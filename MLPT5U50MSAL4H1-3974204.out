@@ -51,3 +51,57 @@ Epoch 5/100
 Epoch 5: val_loss improved from 0.40473 to 0.39738, saving model to models/MLP_t5U50_L9.h5
 2703/2703 - 740s - loss: 0.3994 - acc: 0.8283 - auc: 0.4930 - val_loss: 0.3974 - val_acc: 0.8220 - val_auc: 0.5463 - 740s/epoch - 274ms/step
 Epoch 6/100
+
+Epoch 6: val_loss did not improve from 0.39738
+2703/2703 - 750s - loss: 0.3965 - acc: 0.8295 - auc: 0.5002 - val_loss: 0.4016 - val_acc: 0.8186 - val_auc: 0.5419 - 750s/epoch - 278ms/step
+Epoch 7/100
+
+Epoch 7: val_loss improved from 0.39738 to 0.39638, saving model to models/MLP_t5U50_L9.h5
+2703/2703 - 745s - loss: 0.3938 - acc: 0.8305 - auc: 0.5071 - val_loss: 0.3964 - val_acc: 0.8233 - val_auc: 0.5512 - 745s/epoch - 276ms/step
+Epoch 8/100
+
+Epoch 8: val_loss improved from 0.39638 to 0.39452, saving model to models/MLP_t5U50_L9.h5
+2703/2703 - 747s - loss: 0.3913 - acc: 0.8316 - auc: 0.5134 - val_loss: 0.3945 - val_acc: 0.8303 - val_auc: 0.5545 - 747s/epoch - 276ms/step
+Epoch 9/100
+
+Epoch 9: val_loss improved from 0.39452 to 0.39440, saving model to models/MLP_t5U50_L9.h5
+2703/2703 - 731s - loss: 0.3897 - acc: 0.8322 - auc: 0.5176 - val_loss: 0.3944 - val_acc: 0.8247 - val_auc: 0.5540 - 731s/epoch - 270ms/step
+Epoch 10/100
+
+Epoch 10: val_loss did not improve from 0.39440
+2703/2703 - 750s - loss: 0.3875 - acc: 0.8331 - auc: 0.5227 - val_loss: 0.3968 - val_acc: 0.8224 - val_auc: 0.5508 - 750s/epoch - 278ms/step
+Epoch 11/100
+
+Epoch 11: val_loss improved from 0.39440 to 0.39300, saving model to models/MLP_t5U50_L9.h5
+2703/2703 - 740s - loss: 0.3862 - acc: 0.8337 - auc: 0.5264 - val_loss: 0.3930 - val_acc: 0.8260 - val_auc: 0.5524 - 740s/epoch - 274ms/step
+Epoch 12/100
+
+Epoch 12: val_loss improved from 0.39300 to 0.38936, saving model to models/MLP_t5U50_L9.h5
+2703/2703 - 752s - loss: 0.3847 - acc: 0.8344 - auc: 0.5308 - val_loss: 0.3894 - val_acc: 0.8292 - val_auc: 0.5600 - 752s/epoch - 278ms/step
+Epoch 13/100
+
+Epoch 13: val_loss did not improve from 0.38936
+2703/2703 - 746s - loss: 0.3841 - acc: 0.8345 - auc: 0.5314 - val_loss: 0.3897 - val_acc: 0.8283 - val_auc: 0.5579 - 746s/epoch - 276ms/step
+Epoch 14/100
+
+Epoch 14: val_loss improved from 0.38936 to 0.38866, saving model to models/MLP_t5U50_L9.h5
+2703/2703 - 741s - loss: 0.3822 - acc: 0.8353 - auc: 0.5354 - val_loss: 0.3887 - val_acc: 0.8312 - val_auc: 0.5598 - 741s/epoch - 274ms/step
+Epoch 15/100
+
+Epoch 15: val_loss did not improve from 0.38866
+2703/2703 - 745s - loss: 0.3811 - acc: 0.8357 - auc: 0.5389 - val_loss: 0.3945 - val_acc: 0.8264 - val_auc: 0.5579 - 745s/epoch - 276ms/step
+Epoch 16/100
+
+Epoch 16: val_loss did not improve from 0.38866
+2703/2703 - 751s - loss: 0.3806 - acc: 0.8359 - auc: 0.5397 - val_loss: 0.3916 - val_acc: 0.8308 - val_auc: 0.5573 - 751s/epoch - 278ms/step
+Epoch 17/100
+
+Epoch 17: val_loss did not improve from 0.38866
+2703/2703 - 745s - loss: 0.3794 - acc: 0.8365 - auc: 0.5424 - val_loss: 0.3927 - val_acc: 0.8298 - val_auc: 0.5595 - 745s/epoch - 276ms/step
+Epoch 18/100
+
+Epoch 18: val_loss did not improve from 0.38866
+2703/2703 - 744s - loss: 0.3784 - acc: 0.8370 - auc: 0.5456 - val_loss: 0.3899 - val_acc: 0.8327 - val_auc: 0.5676 - 744s/epoch - 275ms/step
+Epoch 18: early stopping
+2023-02-22 14:10:22.239660: W tensorflow/core/kernels/data/generator_dataset_op.cc:107] Error occurred when finalizing GeneratorDataset iterator: FAILED_PRECONDITION: Python interpreter state is not initialized. The process may be terminated.
+	 [[{{node PyFunc}}]]
