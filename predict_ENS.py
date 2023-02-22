@@ -204,7 +204,7 @@ def Predict(test_all_features_np3D, input_file):
 
 
 def main():
-    input_file = 'dataset/Bacterial_ppc_Pid_Pseq.txt'
+    input_file = '../surveyComp/dataset/Dset_448_Pid_Pseq.txt'
     #protDict = protToDict(input_file)
     test_all_features_np3D = readSort(input_file)
     Predict(test_all_features_np3D, input_file)
