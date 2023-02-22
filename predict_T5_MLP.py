@@ -30,7 +30,7 @@ def protToDict(datasetAddress):
         if not line_Pseq:
             break
         #if len(line_Pseq) < 1024:
-        prot_file = open('t5U50Dset315/{}.embd'.format(line_PID))
+        prot_file = open('../surveyComp/t5U50Dset448/{}.embd'.format(line_PID))
         for index, prot_line in enumerate(prot_file):
             #print(line_PID)
             prot_line = prot_line.strip().split(':')[1]
@@ -125,144 +125,22 @@ def readSort(datasetAddress):
 
 def Predict(test_all_features_np3D, input_file):
     
-    #TF
-    """input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_ens_1")
-    att_layer = MultiHeadAttention(num_heads=HEAD_NUM, key_dim=KEY_SIZE)(input_features, input_features)
-    #out3 = Flatten()(input_features)
-    out3 = Flatten()(att_layer)  
-    out3 = Dropout(rate=0)(out3)
-    out3 = Dense(128, activation='relu', name="dense_att_1")(out3)
-    out3 = Dropout(rate=0)(out3)
-    out3 = Dense(16, activation='relu', name="dense_att_2")(out3)
-    out3 = Dropout(rate=0)(out3)
-    out3 = Dense(1, activation='sigmoid', name="dense_att_4")(out3)"""
-
-    #MLP
-    """
-    input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_ens_1")
+    input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_T5_1")
     out3 = Flatten()(input_features)
-    out3 = Dropout(rate=0)(out3)
-    out3 = Dense(256, activation='relu', name="dense_att_1")(out3)
-    out3 = Dropout(rate=0)(out3)
-    out3 = Dense(128, activation='relu', name="dense_att_2")(out3)
-    out3 = Dropout(rate=0)(out3)
-    out3 = Dense(16, activation='relu', name="dense_att_3")(out3)
-    out3 = Dropout(rate=0)(out3)
-    out3 = Dense(1, activation='sigmoid', name="dense_att_4")(out3)
-    """
-
-    
-    
-
-    """
-    #Conv1D
-    input_features = Input(shape=(WINDOW_SIZE, 768), name="input_ens_1")
-    out3 = Conv1D(64, 3, activation='relu', name='CNN_1')(input_features)
-    out3 = Conv1D(64, 3, activation='relu', name='CNN_2')(out3)
-    out3 = Dropout(rate=0)(out3)
-    out3 = MaxPool1D(pool_size=2)(out3)
-    out3 = Flatten()(out3)
-    out3 = Dense(16, activation='relu', name="dense_att_2")(out3)
-    out3 = Dropout(rate=0)(out3)
-    out3 = Dense(1, activation='sigmoid', name="dense_att_4")(out3)"""
-
-    
-    #RNN
-    
-    input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_ens_1")
-    out3 = Bidirectional(
-            LSTM(name="lstm_right", activation="tanh", recurrent_activation="sigmoid", units=64,
-                return_sequences=True, unroll=False, use_bias=True, recurrent_dropout=0.0),
-            name="bidirectional_right")(input_features)
-    out3 = Dropout(rate=0.3)(out3)
-    out3 = Flatten()(out3)
-    out3 = Dense(64, activation='relu', name="dense_RNN_1")(out3)
-    out3 = Dropout(rate=0.3)(out3)
-    out3 = Dense(1, activation='sigmoid', name="dense_RNN_2")(out3)
-
-    
-
-    """
-    #CNN2D
-    input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_ens_1")
-    out3 = Reshape((WINDOW_SIZE, 1024, 1))(input_features)
-    out3 = Conv2D(filters=48, kernel_size=5, data_format="channels_last",
-                    padding="same", activation="relu", name="conv2d_left")(out3)
-    out3 = Dropout(rate=0.3)(out3)
-    out3 = MaxPool2D(pool_size=3)(out3)
-    out3 = Flatten()(out3)
-    out3 = Dense(units=128, activation='relu', name="dense_CNN_1")(out3)
-    out3 = Dropout(rate=0.3)(out3)
-    out3 = Dense(units=16, activation='relu', name="dense_CNN_2")(out3)
-    out3 = Dropout(rate=0.3)(out3)
-    out3 = Dense(1, activation='sigmoid', name="dense_CNN_3")(out3)
-    """
-
-    """
-    #RnnTf
-    input_features = Input(shape=((int)(WINDOW_SIZE), 768), name="input_ens_1")
-    out = Bidirectional(
-            GRU(name="gru_right", activation="tanh", recurrent_activation="sigmoid", units=64,
-                return_sequences=True, unroll=False, use_bias=True, reset_after=True, recurrent_dropout=0.3),
-            name="bidirectional_right")(input_features)
-    out = Dropout(rate=0.3)(out)
-    att_layer = MultiHeadAttention(num_heads=HEAD_NUM, key_dim=KEY_SIZE)(out, out)
-    out3 = Flatten()(att_layer)
-    out3 = Dense(128, activation='relu', name="dense_att_2")(out3)
-    out3 = Dropout(rate=0.3)(out3)
-    out3 = Dense(16, activation='relu', name="dense_att_3")(out3)
-    out3 = Dropout(rate=0.3)(out3)
-    out3 = Dense(1, activation='sigmoid', name="dense_att_4")(out3)
-    """
-    """
-    #TfRnn
-    input_features = Input(shape=((int)(WINDOW_SIZE), 768), name="input_ens_1")
-    att_layer = MultiHeadAttention(num_heads=HEAD_NUM, key_dim=KEY_SIZE)(input_features, input_features)
-    out = Dropout(rate=0.3)(att_layer)
-    out = Bidirectional(
-                GRU(name="gru_right", activation="tanh", recurrent_activation="sigmoid", units=64,
-                    return_sequences=True, unroll=False, use_bias=True, reset_after=True, recurrent_dropout=0.3),
-                name="bidirectional_right")(att_layer)
-    out = Dropout(rate=0.3)(out)
-    out3 = Flatten()(out)
-    out3 = Dense(128, activation='relu', name="dense_att_2")(out3)
-    out3 = Dropout(rate=0.3)(out3)
-    out3 = Dense(16, activation='relu', name="dense_att_3")(out3)
-    out3 = Dropout(rate=0.3)(out3)
-    out3 = Dense(1, activation='sigmoid', name="dense_att_4")(out3)
-    """
-
-
-    """
-    #Useless
-    out3 = Dense(128, activation='relu', name="dense_att_2")(input_features)
-    out3 = Dropout(rate=0.3)(out3)
-    out3 = Dense(16, activation='relu', name="dense_att_3")(out3)
-    out3 = Dropout(rate=0.3)(out3)
-    Adder = Lambda(lambda x: K.sum(x, axis=1), output_shape=(lambda shape: (shape[0], shape[2])))
-    out3 = Adder(out3)
-    out3 = Dense(1, activation='sigmoid', name="dense_att_4")(out3)"""
-
-    """
-    model = Sequential() 
-    input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_ens_1")
-    out3 = Bidirectional(
-            LSTM(name="lstm_right", activation="tanh", recurrent_activation="sigmoid", units=64,
-                return_sequences=True, unroll=False, use_bias=True, recurrent_dropout=0.0),
-            name="bidirectional_right")(input_features)
-    out3 = Dropout(rate=0.3)(out3)
-    out3 = Flatten()(out3)
-    out3 = Dense(64, activation='relu', name="dense_RNN_1")(out3)
-    out3 = Dropout(rate=0.3)(out3)
-    out3 = Dense(1, activation='sigmoid', name="dense_RNN_2")(out3)
-    model = keras.models.Model(inputs=input_features, outputs=out3)
-    """
+    out3 = Dropout(rate=0.5)(out3)
+    out3 = Dense(256, activation='relu', name="dense_T5_1")(out3)
+    out3 = Dropout(rate=0.5)(out3)
+    out3 = Dense(128, activation='relu', name="dense_T5_2")(out3)
+    out3 = Dropout(rate=0.5)(out3)
+    out3 = Dense(16, activation='relu', name="dense_T5_3")(out3)
+    out3 = Dropout(rate=0.5)(out3)
+    out3 = Dense(1, activation='sigmoid', name="dense_T5_4")(out3)
 
 
 
     
     model = keras.models.Model(inputs=input_features, outputs=out3)
-    model.load_weights("models/LSTMt5U50TrainedL4H1EarlyStoppingFuncValT335CorVal.h5") 
+    model.load_weights("models/MLP_t5U50_L9.h5") 
     y_pred_testing = model.predict(test_all_features_np3D, batch_size=1024).ravel()
 
     # load input proteins again and output the predict values 
@@ -274,7 +152,7 @@ def Predict(test_all_features_np3D, input_file):
         #line_feature = fin.readline().rstrip('\n').rstrip(' ')
         if not line_Pseq:
             break
-        fout = open("t5U50OutDset315/"+line_PID.upper()+".txt", "w")
+        fout = open("Out_T5_MLP_448/"+line_PID.upper()+".txt", "w")
         
         for i in range(len(line_Pseq)):
             fout.write(str(y_pred_testing[start_index + i]) + "\n")
@@ -289,7 +167,7 @@ def Predict(test_all_features_np3D, input_file):
 
 
 def main():
-    input_file = 'dataset/Dset_315_Pid_Pseq.txt'
+    input_file = '../surveyComp/dataset/Dset_448_Pid_Pseq.txt'
     protDict = protToDict(input_file)
     test_all_features_np3D = readSort(input_file)
     Predict(test_all_features_np3D, input_file)
