@@ -11,4 +11,7 @@ source /home/mohsenh/grCPuMsaEnv/bin/activate
 #python predict_MSA_MLP.py
 #python predict_MSA_LSTM.py
 #python predict_T5_LSTM.py
-python predict_T5_MLP.py
+#python predict_T5_MLP.py
+#python predict_T5_MSA_MLP.py
+#python predict_T5_MSA_LSTM.py
+python predict_ENS.py
