@@ -192,7 +192,7 @@ def partitioning(datasetAddress):
 #valPartition = partitioning("dataset/NewValidation100_Pid_Pseq_label.txt")
 # rm 335 similarity
 trainPartition = partitioning("../surveyComp/dataset/train_without315_Pid_Pseq_label.txt")
-valPartition = partitioning("dataset/val_without315_Pid_Pseq_label.txt")
+valPartition = partitioning("../surveyComp/dataset/val_without315_Pid_Pseq_label.txt")
 
 # Separated train and val
 #trainPartition = partitioning("dataset/trainSurvey_Pid_Pseq_label.txt")

@@ -33,7 +33,7 @@ class DataGenerator(keras.utils.Sequence):
 
     def protToDict(self, proteinName):
         protDict =  defaultdict(dict)
-        prot_file = open('../surveyComp/t5TrainU50Dataset/{}.embd'.format(proteinName))
+        prot_file = open('../surveyComp/msaEmbd/{}.embd'.format(proteinName))
         for index, prot_line in enumerate(prot_file):
             prot_line = prot_line.strip().split(':')[1]
             embd_value = [float(x) for x in prot_line.split()]
@@ -51,7 +51,7 @@ class DataGenerator(keras.utils.Sequence):
                     print(protDict[proteinName])
                     exit(1)
             else:
-                    selectedFeature.append(np.zeros(1024))
+                    selectedFeature.append(np.zeros(768))
 
         return np.array(selectedFeature)
 
@@ -236,19 +236,18 @@ model = keras.models.Model(inputs=input_features, outputs=out3)
 #MLP
 
 model = Sequential()    
-input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_T5_1")
-out3 = Dense(1024, activation='relu', name="dense_T5_0")(input_features)
-out3 = Dropout(rate=0.3)(out3)
-out3 = Flatten()(out3) #(input_features)
+input_features = Input(shape=((int)(WINDOW_SIZE), 768), name="input_MSA_1")
+out3 = Dense(768, activation='relu', name="dense_MSA_0")(input_features)
+out3 = Flatten()(out3)#(input_features)
 #out3 = Flatten()(att_layer)
 out3 = Dropout(rate=0.5)(out3)
-out3 = Dense(256, activation='relu', name="dense_T5_1")(out3)
+out3 = Dense(256, activation='relu', name="dense_MSA_1")(out3)
 out3 = Dropout(rate=0.5)(out3)
-out3 = Dense(128, activation='relu', name="dense_T5_2")(out3)
+out3 = Dense(128, activation='relu', name="dense_MSA_2")(out3)
 out3 = Dropout(rate=0.5)(out3)
-out3 = Dense(16, activation='relu', name="dense_T5_3")(out3)
+out3 = Dense(16, activation='relu', name="dense_MSA_3")(out3)
 out3 = Dropout(rate=0.5)(out3)
-out3 = Dense(1, activation='sigmoid', name="dense_T5_4")(out3)
+out3 = Dense(1, activation='sigmoid', name="dense_MSA_4")(out3)
 model = keras.models.Model(inputs=input_features, outputs=out3)
 
 #RNN
@@ -291,7 +290,7 @@ model.summary()
 
 #model.compile()
 es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=4)
-mc = ModelCheckpoint("models/MLP_t5U50_L9_5Layer.h5",
+mc = ModelCheckpoint("models/MLP_MSA_L9_5Layer.h5",
                         save_weights_only=True, monitor='val_loss',
                         mode='min', verbose=1, save_best_only=True)
 # Train model on dataset
