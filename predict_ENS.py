@@ -99,7 +99,7 @@ def readSort(datasetAddress):
     features3D = []
     features3DMSA = []
     labels = []
-    protDict = protToDict(datasetAddress, "../surveyComp/t5U50Dset448")
+    protDict = protToDict(datasetAddress, "../surveyComp/t5U50Dset315")
     protDictMSA = protToDict(datasetAddress, "../surveyComp/msaEmbd")
     dataset_file = open(datasetAddress, 'r')
     while True:
@@ -188,7 +188,7 @@ def Predict(test_all_features_np3D, input_file):
         #line_feature = fin.readline().rstrip('\n').rstrip(' ')
         if not line_Pseq:
             break
-        fout = open("Out_ENS_448/"+line_PID.upper()+".txt", "w")
+        fout = open("Out_ENS_315/"+line_PID.upper()+".txt", "w")
         
         for i in range(len(line_Pseq)):
             fout.write(str((y_pred_testing[start_index + i] + y_pred_testingRNN[start_index + i])/2) + "\n")
@@ -204,7 +204,7 @@ def Predict(test_all_features_np3D, input_file):
 
 
 def main():
-    input_file = '../surveyComp/dataset/Dset_448_Pid_Pseq.txt'
+    input_file = '../surveyComp/dataset/Dset_315_Pid_Pseq.txt'
     #protDict = protToDict(input_file)
     test_all_features_np3D = readSort(input_file)
     Predict(test_all_features_np3D, input_file)

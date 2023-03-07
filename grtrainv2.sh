@@ -8,5 +8,6 @@
 #source /home/mohsenh/grCPuMsaEnv/bin/activate
 source /home/mohsenh/pithiaEnv/bin/activate
 
+python train_T5_MSA_LSTM.py
 #python trainMSA_LSTM.py
-python trainT5_LSTM.py
+#python trainT5_LSTM.py
