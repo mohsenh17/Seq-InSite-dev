@@ -325,30 +325,35 @@ model = Sequential()
 input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_ens_1")
 input_features2 = Input(shape=((int)(WINDOW_SIZE), 768), name="input_ens_2")
 
-out3 = Reshape((WINDOW_SIZE, 1024, 1))(input_features)
-out3 = Conv2D(filters=32, kernel_size=5, data_format="channels_last",
-                padding="same", activation="relu", name="CNN_T5")(out3)
-out3 = Dropout(rate=0.3)(out3)
-out3 = MaxPool2D(pool_size=3, name="maxpool_T5")(out3)
-out3 = Flatten()(out3)
-out3 = Dense(units=128, activation='relu', name="dense_CNN_T5_1")(out3)
-
-
-out2 = Reshape((WINDOW_SIZE, 768, 1))(input_features2)
-out2 = Conv2D(filters=32, kernel_size=5, data_format="channels_last",
-                padding="same", activation="relu", name="CNN_MSA")(out2)
-out2 = Dropout(rate=0.3)(out2)
-out2 = MaxPool2D(pool_size=3, name="maxpool_CNN")(out2)
+out2 = Bidirectional(
+        LSTM(name="lstm_T5", activation="tanh", recurrent_activation="sigmoid", units=64,
+            return_sequences=True, unroll=False, use_bias=True, recurrent_dropout=0.0),
+        name="bidirectional_T5")(input_features)
+out3 = Bidirectional(
+        LSTM(name="lstm_MSA", activation="tanh", recurrent_activation="sigmoid", units=64,
+            return_sequences=True, unroll=False, use_bias=True, recurrent_dropout=0.0),
+        name="bidirectional_MSA")(input_features2)
 out2 = Flatten()(out2)
-out2 = Dense(units=128, activation='relu', name="dense_CNN_MSA_1")(out2)
-
-concatenated = Concatenate(name='CNN_concat')([out3, out2])
+#att_layer = MultiHeadAttention(head_num=1, name='att_middle')(input_features)
+out2 = Dense(1024, activation='relu', name="dense_LSTM_msa_0")(out2)
+out2 = Dropout(rate=0.3)(out2)
+#att_layer = MultiHeadAttention(num_heads=HEAD_NUM, key_dim=KEY_SIZE)(input_features2, input_features2)
+#out3 = GlobalMaxPooling1D()(att_layer)
+out3 = Flatten()(out3)
+out3 = Dense(768, activation='relu', name="dense_LSTM_t5_0")(out3)
+out3 = Dropout(rate=0.3)(out3)
+concatenated = Concatenate(name='LSTM_concat')([out3, out2])
 out3 = Flatten()(concatenated)
-out3 = Dense(128, activation='relu', name="dense_CNN_com_2")(out3)
+#out3 = Dropout(rate=0.3)(out3)
+out3 = Dense(256, activation='relu', name="dense_LSTM_com_1")(out3)
 out3 = Dropout(rate=0.3)(out3)
-out3 = Dense(16, activation='relu', name="dense_CNN_com_3")(out3)
+out3 = Dense(128, activation='relu', name="dense_LSTM_com_2")(out3)
 out3 = Dropout(rate=0.3)(out3)
-out3 = Dense(1, activation='sigmoid', name="dense_CNN_com_4")(out3)
+out3 = Dense(16, activation='relu', name="dense_LSTM_com_3")(out3)
+out3 = Dropout(rate=0.3)(out3)
+#Adder = Lambda(lambda x: K.sum(x, axis=1), output_shape=(lambda shape: (shape[0], shape[2])))
+#out3 = Adder(out3)
+out3 = Dense(1, activation='sigmoid', name="dense_LSTM_com_4")(out3)
 model = keras.models.Model(inputs=[input_features,input_features2], outputs=out3)
 #model = keras.models.Model(inputs=input_features, outputs=out3)
 optimizer_adam = keras.optimizers.Adam(learning_rate=(float)(0.001), beta_1=0.9, beta_2=0.999, amsgrad=False)
@@ -359,7 +364,7 @@ model.summary()
 
 #model.compile()
 es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=4)
-mc = ModelCheckpoint("models/CNN_t5_MSA_without315.h5",
+mc = ModelCheckpoint("models/LSTM_t5_MSA_without315.h5",
                         save_weights_only=True, monitor='val_loss',
                         mode='min', verbose=1, save_best_only=True)
 # Train model on dataset

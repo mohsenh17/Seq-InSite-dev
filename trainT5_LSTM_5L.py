@@ -192,8 +192,8 @@ def partitioning(datasetAddress):
 #trainPartition = partitioning("dataset/trainSingleSurvey_Pid_Pseq_label.txt")
 #valPartition = partitioning("dataset/valSingleSurvey_Pid_Pseq_label.txt")
 
-trainPartition = partitioning("dataset/NewtrainPlus50EditedDset500More_Pid_Pseq_label.txt")
-valPartition = partitioning("dataset/NewValidation100_Pid_Pseq_label.txt")
+trainPartition = partitioning("../surveyComp/dataset/NewtrainPlus50EditedDset500More_Pid_Pseq_label.txt")
+valPartition = partitioning("../surveyComp/dataset/NewValidation100_Pid_Pseq_label.txt")
 
 # More Train Less val
 training_generator = DataGenerator(trainPartition, len(trainPartition))
