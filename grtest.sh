@@ -7,7 +7,7 @@
 
 #source /home/mohsenh/grDelphiTensorflow1GPUenv/bin/activate
 source /home/mohsenh/grCPuMsaEnv/bin/activate
-python predict_ENS_3M_w315.py
+python predict_ENS_3M_w315resize.py
 #python predict_T5_MLP_5L.py
 #python predict_MSA_MLP.py
 #python predict_MSA_LSTM.py

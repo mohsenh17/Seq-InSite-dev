@@ -326,7 +326,7 @@ input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_ens_1")
 input_features2 = Input(shape=((int)(WINDOW_SIZE), 768), name="input_ens_2")
 out3 = Dense(units=256, activation='relu', name="dense_CNN_T5_0")(input_features)
 
-out3 = Reshape((WINDOW_SIZE, 1024, 1))(out3)
+out3 = Reshape((WINDOW_SIZE, 256, 1))(out3)
 out3 = Conv2D(filters=64, kernel_size=5, data_format="channels_last",
                 padding="same", activation="relu", name="CNN_T5")(out3)
 out3 = Dropout(rate=0.3)(out3)
@@ -336,7 +336,7 @@ out3 = Dense(units=128, activation='relu', name="dense_CNN_T5_1")(out3)
 
 
 out2 = Dense(units=256, activation='relu', name="dense_CNN_MSA_0")(input_features2)
-out2 = Reshape((WINDOW_SIZE, 768, 1))(out2)
+out2 = Reshape((WINDOW_SIZE, 256, 1))(out2)
 out2 = Conv2D(filters=64, kernel_size=5, data_format="channels_last",
                 padding="same", activation="relu", name="CNN_MSA")(out2)
 out2 = Dropout(rate=0.3)(out2)
