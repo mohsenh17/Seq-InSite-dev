@@ -99,8 +99,9 @@ def readSort(datasetAddress):
     features3D = []
     features3DMSA = []
     labels = []
-    protDict = protToDict(datasetAddress, "../surveyComp/t5U50Dset315")
-    protDictMSA = protToDict(datasetAddress, "../surveyComp/msaEmbd")
+    protDict = protToDict(datasetAddress, "../surveyComp/t5U50Dset60")
+    #protDictMSA = protToDict(datasetAddress, "../surveyComp/msaEmbd")
+    protDictMSA = protToDict(datasetAddress, "../msaTransformer/dset60/embd/")
     dataset_file = open(datasetAddress, 'r')
     while True:
         line_PID = dataset_file.readline().strip()
@@ -142,7 +143,7 @@ def Predict(test_all_features_np3D, input_file):
     
         
     model = keras.models.Model(inputs=[input_features,input_features2], outputs=out3)
-    model.load_weights("models/MLP_T5_MSA_without315.h5") 
+    model.load_weights("models/MLP_T5_MSA_without60.h5") 
     y_pred_testing = model.predict(test_all_features_np3D, batch_size=1024).ravel()
 
 
@@ -173,7 +174,7 @@ def Predict(test_all_features_np3D, input_file):
     out3 = Dense(1, activation='sigmoid', name="dense_LSTM_com_4")(out3)
 
     model = keras.models.Model(inputs=[input_features,input_features2], outputs=out3)
-    model.load_weights("models/LSTM_T5_MSA_without315.h5") 
+    model.load_weights("models/LSTM_T5_MSA_without60.h5") 
     y_pred_testingRNN = model.predict(test_all_features_np3D, batch_size=1024).ravel()
     
 
@@ -188,7 +189,7 @@ def Predict(test_all_features_np3D, input_file):
         #line_feature = fin.readline().rstrip('\n').rstrip(' ')
         if not line_Pseq:
             break
-        fout = open("Out_ENSw315_315/"+line_PID.upper()+".txt", "w")
+        fout = open("Out_ENSw60_60/"+line_PID.upper()+".txt", "w")
         
         for i in range(len(line_Pseq)):
             fout.write(str((y_pred_testing[start_index + i] + y_pred_testingRNN[start_index + i])/2) + "\n")
@@ -204,7 +205,7 @@ def Predict(test_all_features_np3D, input_file):
 
 
 def main():
-    input_file = '../surveyComp/dataset/Dset_315_Pid_Pseq.txt'
+    input_file = '../surveyComp/dataset/Dset_60_Pid_Pseq.txt'
     #protDict = protToDict(input_file)
     test_all_features_np3D = readSort(input_file)
     Predict(test_all_features_np3D, input_file)

@@ -14,7 +14,7 @@ from tensorflow.keras.metrics import AUC
 from tensorflow.keras.layers import LSTM, Dense, Flatten, Reshape, Bidirectional, GRU, Dropout, Input, Conv2D, MaxPool2D, Conv1D, MaxPool1D, Concatenate, BatchNormalization, Activation, AveragePooling2D, Embedding, MultiHeadAttention, Lambda, GlobalMaxPooling1D
 #from sklearn.metrics import precision_recall_curve, auc
 
-LOCAL_NEGHBOR_SIZE = 4  #odd
+LOCAL_NEGHBOR_SIZE = 5  #odd
 GLOBAL_NEIGHBOR_SIZE = 0 # Even (WILL INCREASE IF NOT ENOUGH LOCAL NEGHBOR)
 WINDOW_SIZE = 1 + 2*LOCAL_NEGHBOR_SIZE + GLOBAL_NEIGHBOR_SIZE
 KEY_SIZE = WINDOW_SIZE
@@ -181,8 +181,8 @@ def partitioning(datasetAddress):
 #trainPartition = partitioning("dataset/NewtrainPlus50EditedDset500T335_Pid_Pseq_label.txt")
 #valPartition = partitioning("dataset/NewValidation100_Pid_Pseq_label.txt")
 
-trainPartition = partitioning("../surveyComp/dataset/NewTrM315_Pid_Pseq_label.txt")
-valPartition = partitioning("../surveyComp/dataset/valM315_Pid_Pseq_label.txt")
+#trainPartition = partitioning("../surveyComp/dataset/NewTrM315_Pid_Pseq_label.txt")
+#valPartition = partitioning("../surveyComp/dataset/valM315_Pid_Pseq_label.txt")
 
 # Separated train and val
 #trainPartition = partitioning("dataset/trainSurvey_Pid_Pseq_label.txt")
@@ -191,9 +191,9 @@ valPartition = partitioning("../surveyComp/dataset/valM315_Pid_Pseq_label.txt")
 # single cluster train and val
 #trainPartition = partitioning("dataset/trainSingleSurvey_Pid_Pseq_label.txt")
 #valPartition = partitioning("dataset/valSingleSurvey_Pid_Pseq_label.txt")
-
-#trainPartition = partitioning("dataset/NewtrainPlus50EditedDset500More_Pid_Pseq_label.txt")
-#valPartition = partitioning("dataset/NewValidation100_Pid_Pseq_label.txt")
+#for more window size
+trainPartition = partitioning("dataset/NewtrainPlus50EditedDset500More_Pid_Pseq_label.txt")
+valPartition = partitioning("dataset/NewValidation100_Pid_Pseq_label.txt")
 
 # More Train Less val
 training_generator = DataGenerator(trainPartition, len(trainPartition))
@@ -291,7 +291,7 @@ model.summary()
 
 #model.compile()
 es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=4)
-mc = ModelCheckpoint("models/MLP_t5U50_L9.h5",
+mc = ModelCheckpoint("models/MLP_t5U50_L11.h5",
                         save_weights_only=True, monitor='val_loss',
                         mode='min', verbose=1, save_best_only=True)
 # Train model on dataset

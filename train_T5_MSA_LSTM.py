@@ -191,8 +191,8 @@ def partitioning(datasetAddress):
 #trainPartition = partitioning("dataset/NewtrainPlus50EditedDset500T335_Pid_Pseq_label.txt")
 #valPartition = partitioning("dataset/NewValidation100_Pid_Pseq_label.txt")
 # rm 335 similarity
-trainPartition = partitioning("../surveyComp/dataset/train_without60_Pid_Pseq_label.txt")
-valPartition = partitioning("../surveyComp/dataset/val_without60_Pid_Pseq_label.txt")
+trainPartition = partitioning("../surveyComp/dataset/train_without70_Pid_Pseq_label.txt")
+valPartition = partitioning("../surveyComp/dataset/val_without70_Pid_Pseq_label.txt")
 
 # Separated train and val
 #trainPartition = partitioning("dataset/trainSurvey_Pid_Pseq_label.txt")
@@ -364,11 +364,11 @@ model.summary()
 
 #model.compile()
 es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=4)
-mc = ModelCheckpoint("models/LSTM_T5_MSA_without60.h5",
+mc = ModelCheckpoint("models/LSTM_T5_MSA_without70.h5",
                         save_weights_only=True, monitor='val_loss',
                         mode='min', verbose=1, save_best_only=True)
 # Train model on dataset
-cw = {0:0.61866711, 1:2.60673375}
+cw = {0:0.61866711, 1:2.70673375}
 cw = {0:0.6165, 1: 2.645}
 cw = {0:0.5917,1: 3.227} #t335
 """

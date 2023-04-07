@@ -181,8 +181,8 @@ def partitioning(datasetAddress):
 #trainPartition = partitioning("dataset/NewtrainPlus50EditedDset500T335_Pid_Pseq_label.txt")
 #valPartition = partitioning("dataset/NewValidation100_Pid_Pseq_label.txt")
 
-trainPartition = partitioning("../surveyComp/dataset/NewTrM315_Pid_Pseq_label.txt")
-valPartition = partitioning("../surveyComp/dataset/valM315_Pid_Pseq_label.txt")
+#trainPartition = partitioning("../surveyComp/dataset/NewTrM315_Pid_Pseq_label.txt")
+#valPartition = partitioning("../surveyComp/dataset/valM315_Pid_Pseq_label.txt")
 
 # Separated train and val
 #trainPartition = partitioning("dataset/trainSurvey_Pid_Pseq_label.txt")
@@ -192,8 +192,8 @@ valPartition = partitioning("../surveyComp/dataset/valM315_Pid_Pseq_label.txt")
 #trainPartition = partitioning("dataset/trainSingleSurvey_Pid_Pseq_label.txt")
 #valPartition = partitioning("dataset/valSingleSurvey_Pid_Pseq_label.txt")
 
-#trainPartition = partitioning("dataset/NewtrainPlus50EditedDset500More_Pid_Pseq_label.txt")
-#valPartition = partitioning("dataset/NewValidation100_Pid_Pseq_label.txt")
+trainPartition = partitioning("../surveyComp/dataset/NewtrainPlus50EditedDset500More_Pid_Pseq_label.txt")
+valPartition = partitioning("../surveyComp/dataset/NewValidation100_Pid_Pseq_label.txt")
 
 # More Train Less val
 training_generator = DataGenerator(trainPartition, len(trainPartition))
@@ -291,7 +291,7 @@ model.summary()
 
 #model.compile()
 es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=4)
-mc = ModelCheckpoint("models/MLP_MSA_L9.h5",
+mc = ModelCheckpoint("models/MLP_MSA_L9_survey.h5",
                         save_weights_only=True, monitor='val_loss',
                         mode='min', verbose=1, save_best_only=True)
 # Train model on dataset
