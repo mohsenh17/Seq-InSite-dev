@@ -7,7 +7,7 @@
 
 #source /home/mohsenh/grDelphiTensorflow1GPUenv/bin/activate
 source /home/mohsenh/grCPuMsaEnv/bin/activate
-python predict_MSA.py
+#python predict_MSA.py
 #python predict_ENS_w315.py
 #python predict_T5_MLP_5L.py
 #python predict_MSA_MLP.py
@@ -15,5 +15,7 @@ python predict_MSA.py
 #python predict_T5_LSTM.py
 #python predict_T5_MLP.py
 #python predict_T5_MSA_MLP.py
+#python predict_T5_ankh_MLP.py
 #python predict_T5_MSA_LSTM.py
 #python predict_ENS_w315.py
+python predict_ENS_ankh_t5.py

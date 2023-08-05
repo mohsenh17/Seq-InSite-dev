@@ -211,28 +211,151 @@ validation_generator = DataGenerator(valPartition, len(valPartition), shuffleSet
 
 
 
+"""
+input_file = 'dataset/NewValidation_Pid_Pseq_label.txt'
+protDict = protToDict(input_file)
+ValSet = readSort(input_file)
+"""
+# Design model
+"""
+model = Sequential()
+model.add(layers.Input(shape=(17, 768), name="input_ens_1"))
+model.add(MultiHeadAttention(head_num=1, name='att_middle'))
+model.add(layers.Flatten())
+model.add(layers.Dropout(0.5))
+model.add(layers.Dense(64, activation="relu"))
+model.add(layers.Dropout(0.5))
+model.add(layers.Dense(1, activation='sigmoid'))
+"""
+#TF:
+"""
+model = Sequential()    
+input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_ens_1")
+#att_layer = MultiHeadAttention(head_num=1, name='att_middle')(input_features)
+att_layer = MultiHeadAttention(num_heads=HEAD_NUM, key_dim=KEY_SIZE)(input_features, input_features)
+out3 = Flatten()(att_layer)
+out3 = Dense(128, activation='relu', name="dense_att_2")(out3)
+out3 = Dropout(rate=0.3)(out3)
+out3 = Dense(16, activation='relu', name="dense_att_3")(out3)
+out3 = Dropout(rate=0.3)(out3)
+#Adder = Lambda(lambda x: K.sum(x, axis=1), output_shape=(lambda shape: (shape[0], shape[2])))
+#out3 = Adder(out3)
+out3 = Dense(1, activation='sigmoid', name="dense_att_4")(out3)
+model = keras.models.Model(inputs=input_features, outputs=out3)
+"""
+#MLP
+"""
+model = Sequential()    
+input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_ens_1")
+#att_layer = MultiHeadAttention(head_num=1, name='att_middle')(input_features)
+#att_layer = MultiHeadAttention(num_heads=HEAD_NUM, key_dim=KEY_SIZE)(input_features, input_features)
+out3 = Flatten()(input_features)
+#out3 = Flatten()(att_layer)
+out3 = Dropout(rate=0.5)(out3)
+out3 = Dense(256, activation='relu', name="dense_att_1")(out3)
+out3 = Dropout(rate=0.5)(out3)
+out3 = Dense(128, activation='relu', name="dense_att_2")(out3)
+out3 = Dropout(rate=0.5)(out3)
+out3 = Dense(16, activation='relu', name="dense_att_3")(out3)
+out3 = Dropout(rate=0.5)(out3)
+out3 = Dense(1, activation='sigmoid', name="dense_att_4")(out3)
+model = keras.models.Model(inputs=input_features, outputs=out3)
+"""
+#RNN
+"""
 model = Sequential() 
 input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_ens_1")
-input_features2 = Input(shape=((int)(WINDOW_SIZE), 1536), name="input_ens_2")
-out2 = Dense(1024, activation='relu', name="dense_T5_0")(input_features)
+out3 = Bidirectional(
+        LSTM(name="lstm_right", activation="tanh", recurrent_activation="sigmoid", units=64,
+            return_sequences=True, unroll=False, use_bias=True, recurrent_dropout=0.0),
+        name="bidirectional_right")(input_features)
+out3 = Dropout(rate=0.3)(out3)
+out3 = Flatten()(out3)
+out3 = Dense(64, activation='relu', name="dense_RNN_1")(out3)
+out3 = Dropout(rate=0.3)(out3)
+out3 = Dense(1, activation='sigmoid', name="dense_RNN_2")(out3)
+model = keras.models.Model(inputs=input_features, outputs=out3)
+"""
+"""
+model = Sequential() 
+input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_CNN_1")
+out3 = Reshape((WINDOW_SIZE, 1024, 1))(input_features)
+out3 = Conv2D(filters=48, kernel_size=5, data_format="channels_last",
+                padding="same", activation="relu", name="conv2d_left")(out3)
+out3 = Dropout(rate=0.3)(out3)
+out3 = MaxPool2D(pool_size=3)(out3)
+out3 = Flatten()(out3)
+out3 = Dense(units=128, activation='relu', name="dense_CNN_1")(out3)
+out3 = Dropout(rate=0.3)(out3)
+out3 = Dense(units=16, activation='relu', name="dense_CNN_2")(out3)
+out3 = Dropout(rate=0.3)(out3)
+out3 = Dense(1, activation='sigmoid', name="dense_CNN_3")(out3)
+model = keras.models.Model(inputs=input_features, outputs=out3)   
+"""
+"""
+model = Sequential()    
+input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_ens_1")
+input_features2 = Input(shape=((int)(WINDOW_SIZE), 768), name="input_ens_2")
+
+#att_layer = MultiHeadAttention(head_num=1, name='att_middle')(input_features)
+out2 = Dense(1024, activation='relu', name="dense_msa_0")(input_features)
 out2 = Dropout(rate=0.3)(out2)
 out2 = Flatten()(out2)
-out3 = Dense(768, activation='relu', name="dense_ankh_0")(input_features2)
+#att_layer = MultiHeadAttention(num_heads=HEAD_NUM, key_dim=KEY_SIZE)(input_features2, input_features2)
+#out3 = GlobalMaxPooling1D()(att_layer)
+out3 = Dense(768, activation='relu', name="dense_t5_0")(input_features2)
 out3 = Dropout(rate=0.3)(out3)
 out3 = Flatten()(out3)
 concatenated = Concatenate()([out3, out2])
 out3 = Flatten()(concatenated)
+#out3 = Dropout(rate=0.3)(out3)
 out3 = Dense(256, activation='relu', name="dense_com_1")(out3)
 out3 = Dropout(rate=0.3)(out3)
 out3 = Dense(128, activation='relu', name="dense_com_2")(out3)
 out3 = Dropout(rate=0.3)(out3)
 out3 = Dense(16, activation='relu', name="dense_com_3")(out3)
 out3 = Dropout(rate=0.3)(out3)
+#Adder = Lambda(lambda x: K.sum(x, axis=1), output_shape=(lambda shape: (shape[0], shape[2])))
+#out3 = Adder(out3)
 out3 = Dense(1, activation='sigmoid', name="dense_com_4")(out3)
 model = keras.models.Model(inputs=[input_features,input_features2], outputs=out3)
+"""
 
+model = Sequential()    
+input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_ens_1")
+input_features2 = Input(shape=((int)(WINDOW_SIZE), 1536), name="input_ens_2")
 
-
+out2 = Bidirectional(
+        LSTM(name="lstm_T5", activation="tanh", recurrent_activation="sigmoid", units=64,
+            return_sequences=True, unroll=False, use_bias=True, recurrent_dropout=0.0),
+        name="bidirectional_T5")(input_features)
+out3 = Bidirectional(
+        LSTM(name="lstm_ankh", activation="tanh", recurrent_activation="sigmoid", units=64,
+            return_sequences=True, unroll=False, use_bias=True, recurrent_dropout=0.0),
+        name="bidirectional_ankh")(input_features2)
+out2 = Flatten()(out2)
+#att_layer = MultiHeadAttention(head_num=1, name='att_middle')(input_features)
+out2 = Dense(1024, activation='relu', name="dense_LSTM_ankh_0")(out2)
+out2 = Dropout(rate=0.3)(out2)
+#att_layer = MultiHeadAttention(num_heads=HEAD_NUM, key_dim=KEY_SIZE)(input_features2, input_features2)
+#out3 = GlobalMaxPooling1D()(att_layer)
+out3 = Flatten()(out3)
+out3 = Dense(768, activation='relu', name="dense_LSTM_t5_0")(out3)
+out3 = Dropout(rate=0.3)(out3)
+concatenated = Concatenate(name='LSTM_concat')([out3, out2])
+out3 = Flatten()(concatenated)
+#out3 = Dropout(rate=0.3)(out3)
+out3 = Dense(256, activation='relu', name="dense_LSTM_com_1")(out3)
+out3 = Dropout(rate=0.3)(out3)
+out3 = Dense(128, activation='relu', name="dense_LSTM_com_2")(out3)
+out3 = Dropout(rate=0.3)(out3)
+out3 = Dense(16, activation='relu', name="dense_LSTM_com_3")(out3)
+out3 = Dropout(rate=0.3)(out3)
+#Adder = Lambda(lambda x: K.sum(x, axis=1), output_shape=(lambda shape: (shape[0], shape[2])))
+#out3 = Adder(out3)
+out3 = Dense(1, activation='sigmoid', name="dense_LSTM_com_4")(out3)
+model = keras.models.Model(inputs=[input_features,input_features2], outputs=out3)
+#model = keras.models.Model(inputs=input_features, outputs=out3)
 optimizer_adam = keras.optimizers.Adam(learning_rate=(float)(0.001), beta_1=0.9, beta_2=0.999, amsgrad=False)
 model.compile(loss='binary_crossentropy', optimizer=optimizer_adam, metrics=['acc',aupr_metric]) #metrics=['acc',f1,prc,rec,aupr_metric])
 model.summary()
@@ -241,7 +364,7 @@ model.summary()
 
 #model.compile()
 es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=4)
-mc = ModelCheckpoint("models/MLP_T5_ankh_without448.h5",
+mc = ModelCheckpoint("models/LSTM_T5_ankh_without448.h5",
                         save_weights_only=True, monitor='val_loss',
                         mode='min', verbose=1, save_best_only=True)
 # Train model on dataset
