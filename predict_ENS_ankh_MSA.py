@@ -54,8 +54,8 @@ def readFeatures2D(neighborList,proteinName, protDict, protDictMSA):
                 print(protDict[proteinName])
                 exit(1)
         else:
-                selectedFeature.append(np.zeros(1024).astype('float32'))
-                selectedFeatureMSA.append(np.zeros(1536).astype('float32'))
+                selectedFeature.append(np.zeros(1536).astype('float32'))
+                selectedFeatureMSA.append(np.zeros(768).astype('float32'))
 
     return np.array(selectedFeature), np.array(selectedFeatureMSA)
     
@@ -99,8 +99,8 @@ def readSort(datasetAddress):
     features3D = []
     features3DMSA = []
     labels = []
-    protDict = protToDict(datasetAddress, "../surveyComp/t5U50Dset60")
-    protDictMSA = protToDict(datasetAddress, "../ankh/ankhEmbd")
+    protDict = protToDict(datasetAddress, "../ankh/ankhEmbd")
+    protDictMSA = protToDict(datasetAddress, "../surveyComp/msaEmbd/")
     dataset_file = open(datasetAddress, 'r')
     while True:
         line_PID = dataset_file.readline().strip()
@@ -122,12 +122,12 @@ def readSort(datasetAddress):
 def Predict(test_all_features_np3D, input_file):
 
     #MLP    
-    input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_ens_1")
-    input_features2 = Input(shape=((int)(WINDOW_SIZE), 1536), name="input_ens_2")
+    input_features = Input(shape=((int)(WINDOW_SIZE), 1536), name="input_ens_1")
+    input_features2 = Input(shape=((int)(WINDOW_SIZE), 768), name="input_ens_2")
     out2 = Dense(1024, activation='relu', name="dense_ankh_0")(input_features)
     out2 = Dropout(rate=0.3)(out2)
     out2 = Flatten()(out2)
-    out3 = Dense(768, activation='relu', name="dense_t5_0")(input_features2)
+    out3 = Dense(768, activation='relu', name="dense_MSA_0")(input_features2)
     out3 = Dropout(rate=0.3)(out3)
     out3 = Flatten()(out3)
     concatenated = Concatenate()([out3, out2])
@@ -139,41 +139,45 @@ def Predict(test_all_features_np3D, input_file):
     out3 = Dense(16, activation='relu', name="dense_com_3")(out3)
     out3 = Dropout(rate=0.3)(out3)
     out3 = Dense(1, activation='sigmoid', name="dense_com_4")(out3)
-    
+
         
     model = keras.models.Model(inputs=[input_features,input_features2], outputs=out3)
-    model.load_weights("models/MLP_T5_ankh_without60.h5") 
+    model.load_weights("models/MLP_ankh_MSA_without70.h5") 
     y_pred_testing = model.predict(test_all_features_np3D, batch_size=1024).ravel()
 
 
-    input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_ens_1")
-    input_features2 = Input(shape=((int)(WINDOW_SIZE), 1536), name="input_ens_2")
+    input_features = Input(shape=((int)(WINDOW_SIZE), 1536), name="input_ens_1")
+    input_features2 = Input(shape=((int)(WINDOW_SIZE), 768), name="input_ens_2")
+
     out2 = Bidirectional(
-            LSTM(name="lstm_T5", activation="tanh", recurrent_activation="sigmoid", units=64,
-                return_sequences=True, unroll=False, use_bias=True, recurrent_dropout=0.0),
-            name="bidirectional_T5")(input_features)
-    out3 = Bidirectional(
             LSTM(name="lstm_ankh", activation="tanh", recurrent_activation="sigmoid", units=64,
                 return_sequences=True, unroll=False, use_bias=True, recurrent_dropout=0.0),
-            name="bidirectional_ankh")(input_features2)
+            name="bidirectional_ankh")(input_features)
+    out3 = Bidirectional(
+            LSTM(name="lstm_MSA", activation="tanh", recurrent_activation="sigmoid", units=64,
+                return_sequences=True, unroll=False, use_bias=True, recurrent_dropout=0.0),
+            name="bidirectional_MSA")(input_features2)
     out2 = Flatten()(out2)
-    out2 = Dense(1024, activation='relu', name="dense_LSTM_ankh_0")(out2)
+    out2 = Dense(1024, activation='relu', name="dense_LSTM_msa_0")(out2)
     out2 = Dropout(rate=0.3)(out2)
     out3 = Flatten()(out3)
-    out3 = Dense(768, activation='relu', name="dense_LSTM_t5_0")(out3)
+    out3 = Dense(768, activation='relu', name="dense_LSTM_ankh_0")(out3)
     out3 = Dropout(rate=0.3)(out3)
     concatenated = Concatenate(name='LSTM_concat')([out3, out2])
     out3 = Flatten()(concatenated)
+    #out3 = Dropout(rate=0.3)(out3)
     out3 = Dense(256, activation='relu', name="dense_LSTM_com_1")(out3)
     out3 = Dropout(rate=0.3)(out3)
     out3 = Dense(128, activation='relu', name="dense_LSTM_com_2")(out3)
     out3 = Dropout(rate=0.3)(out3)
     out3 = Dense(16, activation='relu', name="dense_LSTM_com_3")(out3)
     out3 = Dropout(rate=0.3)(out3)
+    #Adder = Lambda(lambda x: K.sum(x, axis=1), output_shape=(lambda shape: (shape[0], shape[2])))
+    #out3 = Adder(out3)
     out3 = Dense(1, activation='sigmoid', name="dense_LSTM_com_4")(out3)
 
     model = keras.models.Model(inputs=[input_features,input_features2], outputs=out3)
-    model.load_weights("models/LSTM_T5_ankh_without60.h5") 
+    model.load_weights("models/LSTM_ankh_MSA_without70.h5") 
     y_pred_testingRNN = model.predict(test_all_features_np3D, batch_size=1024).ravel()
     
 
@@ -188,7 +192,7 @@ def Predict(test_all_features_np3D, input_file):
         #line_feature = fin.readline().rstrip('\n').rstrip(' ')
         if not line_Pseq:
             break
-        fout = open("Out_ENS_ankh_t5_60/"+line_PID.upper()+".txt", "w")
+        fout = open("Out_ENS_ankh_MSA_70/"+line_PID.upper()+".txt", "w")
         
         for i in range(len(line_Pseq)):
             fout.write(str((y_pred_testing[start_index + i] + y_pred_testingRNN[start_index + i])/2) + "\n")
@@ -204,7 +208,7 @@ def Predict(test_all_features_np3D, input_file):
 
 
 def main():
-    input_file = '../surveyComp/dataset/Dset_60_Pid_Pseq.txt'
+    input_file = '../surveyComp/dataset/Dset_70_Pid_Pseq.txt'
     #protDict = protToDict(input_file)
     test_all_features_np3D = readSort(input_file)
     Predict(test_all_features_np3D, input_file)

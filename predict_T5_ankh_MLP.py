@@ -99,7 +99,7 @@ def readSort(datasetAddress):
     features3D = []
     features3DMSA = []
     labels = []
-    protDict = protToDict(datasetAddress, "../surveyComp/t5U50Dset315")
+    protDict = protToDict(datasetAddress, "../surveyComp/t5U50Dset70")
     protDictMSA = protToDict(datasetAddress, "../ankh/ankhEmbd")
     dataset_file = open(datasetAddress, 'r')
     while True:
@@ -141,7 +141,7 @@ def Predict(test_all_features_np3D, input_file):
 
 
     
-    model.load_weights("models/MLP_T5_ankh_without315.h5") 
+    model.load_weights("models/MLP_T5_ankh_without70.h5") 
     y_pred_testing = model.predict(test_all_features_np3D, batch_size=1024).ravel()
 
     # load input proteins again and output the predict values 
@@ -153,7 +153,7 @@ def Predict(test_all_features_np3D, input_file):
         #line_feature = fin.readline().rstrip('\n').rstrip(' ')
         if not line_Pseq:
             break
-        fout = open("Out_MLP_T5_ankh_315/"+line_PID.upper()+".txt", "w")
+        fout = open("Out_MLP_T5_ankh_70/"+line_PID.upper()+".txt", "w")
         
         for i in range(len(line_Pseq)):
             fout.write(str(y_pred_testing[start_index + i]) + "\n")
@@ -168,7 +168,7 @@ def Predict(test_all_features_np3D, input_file):
 
 
 def main():
-    input_file = '../surveyComp/dataset/Dset_315_Pid_Pseq.txt'
+    input_file = '../surveyComp/dataset/Dset_70_Pid_Pseq.txt'
     #protDict = protToDict(input_file)
     test_all_features_np3D = readSort(input_file)
     Predict(test_all_features_np3D, input_file)

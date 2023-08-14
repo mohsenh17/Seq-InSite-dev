@@ -99,7 +99,7 @@ def readSort(datasetAddress):
     features3D = []
     features3DMSA = []
     labels = []
-    protDict = protToDict(datasetAddress, "../surveyComp/t5U50Dset60")
+    protDict = protToDict(datasetAddress, "../surveyComp/t5U50Dset70")
     protDictMSA = protToDict(datasetAddress, "../ankh/ankhEmbd")
     dataset_file = open(datasetAddress, 'r')
     while True:
@@ -124,10 +124,10 @@ def Predict(test_all_features_np3D, input_file):
     #MLP    
     input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_ens_1")
     input_features2 = Input(shape=((int)(WINDOW_SIZE), 1536), name="input_ens_2")
-    out2 = Dense(1024, activation='relu', name="dense_ankh_0")(input_features)
+    out2 = Dense(1024, activation='relu', name="dense_T5_0")(input_features)
     out2 = Dropout(rate=0.3)(out2)
     out2 = Flatten()(out2)
-    out3 = Dense(768, activation='relu', name="dense_t5_0")(input_features2)
+    out3 = Dense(768, activation='relu', name="dense_ankh_0")(input_features2)
     out3 = Dropout(rate=0.3)(out3)
     out3 = Flatten()(out3)
     concatenated = Concatenate()([out3, out2])
@@ -142,7 +142,7 @@ def Predict(test_all_features_np3D, input_file):
     
         
     model = keras.models.Model(inputs=[input_features,input_features2], outputs=out3)
-    model.load_weights("models/MLP_T5_ankh_without60.h5") 
+    model.load_weights("models/MLP_T5_ankh_without70.h5") 
     y_pred_testing = model.predict(test_all_features_np3D, batch_size=1024).ravel()
 
 
@@ -173,8 +173,43 @@ def Predict(test_all_features_np3D, input_file):
     out3 = Dense(1, activation='sigmoid', name="dense_LSTM_com_4")(out3)
 
     model = keras.models.Model(inputs=[input_features,input_features2], outputs=out3)
-    model.load_weights("models/LSTM_T5_ankh_without60.h5") 
+    model.load_weights("models/LSTM_T5_ankh_without70.h5") 
     y_pred_testingRNN = model.predict(test_all_features_np3D, batch_size=1024).ravel()
+
+       
+    input_features = Input(shape=((int)(WINDOW_SIZE), 1024), name="input_ens_1")
+    input_features2 = Input(shape=((int)(WINDOW_SIZE), 1536), name="input_ens_2")
+
+    out3 = Reshape((WINDOW_SIZE, 1024, 1))(input_features)
+    out3 = Conv2D(filters=32, kernel_size=5, data_format="channels_last",
+                    padding="same", activation="relu", name="CNN_T5")(out3)
+    out3 = Dropout(rate=0.3)(out3)
+    out3 = MaxPool2D(pool_size=3, name="maxpool_T5")(out3)
+    out3 = Flatten()(out3)
+    out3 = Dense(units=128, activation='relu', name="dense_CNN_T5_1")(out3)
+
+
+    out2 = Reshape((WINDOW_SIZE, 1536, 1))(input_features2)
+    out2 = Conv2D(filters=32, kernel_size=5, data_format="channels_last",
+                    padding="same", activation="relu", name="CNN_ankh")(out2)
+    out2 = Dropout(rate=0.3)(out2)
+    out2 = MaxPool2D(pool_size=3, name="maxpool_CNN")(out2)
+    out2 = Dense(units=128, activation='relu', name="dense_CNN_ankh_0")(out2)
+    out2 = Flatten()(out2)
+    out2 = Dense(units=128, activation='relu', name="dense_CNN_ankh_1")(out2)
+
+    concatenated = Concatenate(name='CNN_concat')([out3, out2])
+    out3 = Flatten()(concatenated)
+    out3 = Dense(128, activation='relu', name="dense_CNN_com_2")(out3)
+    out3 = Dropout(rate=0.3)(out3)
+    out3 = Dense(16, activation='relu', name="dense_CNN_com_3")(out3)
+    out3 = Dropout(rate=0.3)(out3)
+    out3 = Dense(1, activation='sigmoid', name="dense_CNN_com_4")(out3)
+    model = keras.models.Model(inputs=[input_features,input_features2], outputs=out3)
+    model.load_weights("models/CNN_T5_ankh_without70.h5") 
+    y_pred_testingCNN = model.predict(test_all_features_np3D, batch_size=1024).ravel()
+
+
     
 
     
@@ -188,10 +223,10 @@ def Predict(test_all_features_np3D, input_file):
         #line_feature = fin.readline().rstrip('\n').rstrip(' ')
         if not line_Pseq:
             break
-        fout = open("Out_ENS_ankh_t5_60/"+line_PID.upper()+".txt", "w")
+        fout = open("Out_ENS_3M_ankh_70/"+line_PID.upper()+".txt", "w")
         
         for i in range(len(line_Pseq)):
-            fout.write(str((y_pred_testing[start_index + i] + y_pred_testingRNN[start_index + i])/2) + "\n")
+            fout.write(str((y_pred_testing[start_index + i] + y_pred_testingRNN[start_index + i] + y_pred_testingCNN[start_index + i])/3) + "\n")
             #fout.write(str((y_pred_testingCNN[start_index + i] + y_pred_testingTF[start_index + i])/2) + "\n")
         fout.close()
         start_index += len(line_Pseq)
@@ -204,7 +239,7 @@ def Predict(test_all_features_np3D, input_file):
 
 
 def main():
-    input_file = '../surveyComp/dataset/Dset_60_Pid_Pseq.txt'
+    input_file = '../surveyComp/dataset/Dset_70_Pid_Pseq.txt'
     #protDict = protToDict(input_file)
     test_all_features_np3D = readSort(input_file)
     Predict(test_all_features_np3D, input_file)
